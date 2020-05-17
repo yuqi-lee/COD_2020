@@ -1,8 +1,0 @@
-## ignore this file ##
- /target/
- .cache
- .hw
- .ip_usr_files
- .xpr
- .wcfg
- .sim
