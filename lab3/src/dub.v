@@ -1,68 +1,128 @@
-module dbu
-    (
-        input clk,rst,
-        input succ,
-        input step,
-        input [3:0] sel,
-        input m_rf,
-        input inc,
-        input dec,
+`timescale 1ns / 1ps
+//////////////////////////////////////////////////////////////////////////////////
+// Company: 
+// Engineer: 
+// 
+// Create Date: 2020/05/15 10:49:47
+// Design Name: 
+// Module Name: dbu_1
+// Project Name: 
+// Target Devices: 
+// Tool Versions: 
+// Description: 
+// 
+// Dependencies: 
+// 
+// Revision:
+// Revision 0.01 - File Created
+// Additional Comments:
+// 
+//////////////////////////////////////////////////////////////////////////////////
 
-        input [10:0] status,
-        input [31:0] m_data,rf_data,
 
-        input [31:0] pc, pc_in, instr, rf_rd1, rf_rd2, alu_y, m_rd,
-        
-        output run,
-        output reg [7:0] m_rf_addr,
-        output reg [15:0] led,
-        output reg [31:0] seg
+`timescale 1ns / 1ps
+
+module dbu(
+    input clk,
+    input rst,
+    input succ,
+    input step,
+    input [3:0] sel,
+    input m_rf,
+    input inc,
+    input dec,
+    input [11:0] status,
+    input [31:0] m_data,
+    input [31:0] rf_data,
+    input [31:0] instr,
+    input [31:0] pc_in,
+    input [31:0] pc_out,
+    input [31:0] rd1,
+    input [31:0] rd2,
+    input [31:0] alu_rslt,
+    input [31:0] m_rd,
+    
+    output run,
+    output reg [7:0] m_rf_addr,
+    output reg [15:0] led=0,
+    output reg [7:0] an,
+    output reg [7:0] seg,
+    output reg [31:0] display=0   //
     );
-
-wire step_edg;
-
-get_edg EDG_1(.clk0(clk),.y(step),.rst0(rst),.q(step_edg));
-
-assign run = succ | step_edg;
-
-always @(posedge clk or posedge clk) 
-    if(rst)
-    begin
-        m_rf_addr = 8'h00;
-    end
+    
+    
+    wire step_edg,dec_edg,inc_edg;
+    
+    assign run = succ | step_edg;
+    
+    get_edg        EDG1(.clk0(clk),.rst0(rst),.y(step),.q(step_edg));
+    get_edg        EDG2(.clk0(clk),.rst0(rst),.y(dec),.q(dec_edg));
+    get_edg        EDG3(.clk0(clk),.rst0(rst),.y(inc),.q(inc_edg));
 
     
-
-
-always @(*)
-begin
-    if(sel == 3'b000)
+      
+    always @ (posedge clk, posedge rst)
     begin
-        led = {8'h00,m_rf_addr};
-        if(m_rf)
-            seg = m_data;
-        else
-            seg = rf_data;
-        if(inc)
-            m_rf_addr = m_rf_addr + 1;
-        else if(dec)
-            m_rf_addr = m_rf_addr + 1;   
+        if (rst) 
+        begin
+            m_rf_addr <= 8'h02;
+        end 
+        else if (inc_edg)         
+        begin
+            m_rf_addr = m_rf_addr + 8'h01;
+        end 
+        else if (dec_edg)
+        begin
+            m_rf_addr = m_rf_addr - 8'h01;
+        end         
     end
-    else
+    
+    always@(*)
     begin
-        led = {5'b00000,status};
-        case(sel)
-            3'b001: seg = pc_in;
-            3'b010: seg = pc_out;
-            3'b011: seg = instr;
-            3'b100: seg = rf_rd1;
-            3'b101: seg = rf_rd2;
-            3'b110: seg = alu_y;
-            3'b111: seg = m_rd;
-        endcase
-    end
+    case (sel)
+        3'b000:begin 
+             if(m_rf)
+                    begin
+                    display <=  m_data;                        
+                    end
+             else begin                  
+                    display <= rf_data;
+                    end 
+              led <= {8'h00,m_rf_addr};      
+            end
+   3'b001:begin 
+            display <= pc_in  ; 
+            led <= {4'b0,status};
+          end
+    3'b010:begin 
+            display <= pc_out  ; 
+            led <= {4'b0,status};
+          end
+    3'b011:begin 
+    display <= instr  ; 
+           led <= {4'b0,status};
+          end         
+    3'b100:begin 
+            display <= rd1  ; 
+            led <= {4'b0,status};
+          end         
+   3'b101:begin 
+            display <= rd2  ; 
+            led <= {4'b0,status};
+          end         
+     3'b110:begin 
+            display <=  alu_rslt ; 
+            led <= {4'b0,status};
+          end        
+     3'b111: begin
+             display <= m_rd ;
+             led <= {4'b0,status};
+             end  
+     default: begin
+              display <= 0;
+              led <= 16'h0000; 
+              end                           
+   endcase
 end
-
-
-
 endmodule
+
