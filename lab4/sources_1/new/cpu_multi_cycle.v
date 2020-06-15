@@ -4,8 +4,9 @@
 
 module cpu_multi_cycle(	//多周期CPU
     input clk,			
-    input rst,          
-    output [32:0] done, 
+    input rst,  
+    output isIF,        
+    output [31:0] done, 
     output [31:0] pc_out
     );
 
@@ -83,6 +84,7 @@ module cpu_multi_cycle(	//多周期CPU
         .zf(zf)
         );
 
+    assign isIF = (state == IF);
     assign mem_addr = IorD ? alu_out : pc;
     assign wa_rf = RegDst ? instr[15:11] : instr[20:16];
     assign wd_rf = MemtoReg ? mdr : alu_out;
