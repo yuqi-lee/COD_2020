@@ -1,48 +1,28 @@
 `timescale 1ns / 1ps
-//////////////////////////////////////////////////////////////////////////////////
-// Company: 
-// Engineer: 
-// 
-// Create Date: 2020/05/25 18:24:18
-// Design Name: 
-// Module Name: register_file
-// Project Name: 
-// Target Devices: 
-// Tool Versions: 
-// Description: 
-// 
-// Dependencies: 
-// 
-// Revision:
-// Revision 0.01 - File Created
-// Additional Comments:
-// 
-//////////////////////////////////////////////////////////////////////////////////
 
 
-//32 x WIDTH¼Ä´æÆ÷¶Ñ
 module register_file #(parameter WIDTH = 32)(
-    input clk,              //Ê±ÖÓ£¨ÉÏÉýÑØÓÐÐ§£©
-    input rst,              // Òì²½¸´Î»£¬¸ßµçÆ½ÓÐÐ§
-    input we,               // Ð´Ê¹ÄÜ£¬¸ßµçÆ½ÓÐÐ§
-    input [4:0] ra1,        // ¶Á¶Ë¿Ú0µØÖ·
-    input [4:0] ra2,        // ¶Á¶Ë¿Ú1µØÖ·
-    input [4:0] ra3,        // DBU ¶ÁµØÖ·
-    input [4:0] wa,         // Ð´¶Ë¿ÚµØÖ·
-    input [WIDTH-1:0] wd,        // Ð´¶Ë¿ÚÊý¾Ý
-    output [WIDTH-1:0] rd1,      // ¶Á¶Ë¿Ú0Êý¾Ý
-    output [WIDTH-1:0] rd2,      // ¶Á¶Ë¿Ú1Êý¾Ý
-    output  [WIDTH-1:0] rd3      // DBU ¶ÁÊý¾Ý
+    input clk,              //Ê±ï¿½Ó£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð§ï¿½ï¿½
+    input rst,              // ï¿½ì²½ï¿½ï¿½Î»ï¿½ï¿½ï¿½ßµï¿½Æ½ï¿½ï¿½Ð§
+    input we,               // Ð´Ê¹ï¿½Ü£ï¿½ï¿½ßµï¿½Æ½ï¿½ï¿½Ð§
+    input [4:0] ra1,        // ï¿½ï¿½ï¿½Ë¿ï¿½0ï¿½ï¿½Ö·
+    input [4:0] ra2,        // ï¿½ï¿½ï¿½Ë¿ï¿½1ï¿½ï¿½Ö·
+    input [4:0] ra3,        // DBU ï¿½ï¿½ï¿½ï¿½Ö·
+    input [4:0] wa,         // Ð´ï¿½Ë¿Úµï¿½Ö·
+    input [WIDTH-1:0] wd,        // Ð´ï¿½Ë¿ï¿½ï¿½ï¿½ï¿½ï¿½
+    output [WIDTH-1:0] rd1,      // ï¿½ï¿½ï¿½Ë¿ï¿½0ï¿½ï¿½ï¿½ï¿½
+    output [WIDTH-1:0] rd2,      // ï¿½ï¿½ï¿½Ë¿ï¿½1ï¿½ï¿½ï¿½ï¿½
+    output  [WIDTH-1:0] rd3      // DBU ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
     );
 
 
-    reg [WIDTH-1:0] r [31:0];   // 32¸ö¼Ä´æÆ÷
+    reg [WIDTH-1:0] r [31:0];   // 32ï¿½ï¿½ï¿½Ä´ï¿½ï¿½ï¿½
     
     integer i;
     initial
     begin
         for(i=0; i<32; i=i+1)
-            r[i] = 0;  //³õÊ¼»¯¼Ä´æÆ÷
+            r[i] = 0;  //ï¿½ï¿½Ê¼ï¿½ï¿½ï¿½Ä´ï¿½ï¿½ï¿½
     end
     
     
@@ -58,7 +38,7 @@ module register_file #(parameter WIDTH = 32)(
         end
     end
 
-    assign rd1 = r[ra1];    // Òì²½¶ÁÊý
-    assign rd2 = r[ra2];    // Òì²½¶ÁÊý
-    assign rd3 = r[ra3];    // Òì²½¶ÁÊý
+    assign rd1 = r[ra1];    // ï¿½ì²½ï¿½ï¿½ï¿½ï¿½
+    assign rd2 = r[ra2];    // ï¿½ì²½ï¿½ï¿½ï¿½ï¿½
+    assign rd3 = r[ra3];    // ï¿½ì²½ï¿½ï¿½ï¿½ï¿½
 endmodule

@@ -1,28 +1,9 @@
 `timescale 1ns / 1ps
-//////////////////////////////////////////////////////////////////////////////////
-// Company: 
-// Engineer: 
-// 
-// Create Date: 2020/05/28 16:27:49
-// Design Name: 
-// Module Name: cpu_pipeline
-// Project Name: 
-// Target Devices: 
-// Tool Versions: 
-// Description: 
-// 
-// Dependencies: 
-// 
-// Revision:
-// Revision 0.01 - File Created
-// Additional Comments:
-// 
-//////////////////////////////////////////////////////////////////////////////////
 
 
-module cpu_pipeline(    //?????CPU
-    input clk,			//????????????§¹??
-    input rst,           //????¦Ë????????§¹
+module cpu_pipeline(    
+    input clk,			
+    input rst,          
     output [31:0] done,
     output [31:0] pc_out
     );
@@ -113,7 +94,7 @@ module cpu_pipeline(    //?????CPU
         .op(ID_EX_ir[31:26]),
         .ID_EX_Rs(ID_EX_ir[25:21]),//rs
         .ID_EX_Rt(ID_EX_ir[20:16]),//rt
-        .EX_MEM_Rd(EX_MEM_wa),//P210???????COD????—¥
+        .EX_MEM_Rd(EX_MEM_wa),
         .MEM_WB_Rd(MEM_WB_wa),
         .EX_MEM_wb(EX_MEM_wb),
         .MEM_WB_wb(MEM_WB_wb),
@@ -233,9 +214,10 @@ module cpu_pipeline(    //?????CPU
             ID_EX_imm <= SignExtendImm;
             ID_EX_ir <= IF_ID_ir;
             IF_ID_npc <= PC_IF_ID_Write ? pc + 4 : IF_ID_npc;
+            
             if(stall)
                 IF_ID_ir <= IF_ID_ir;
-            else if(IF_flush && !stall) 
+            else if(IF_flush) 
                 IF_ID_ir <= 0;
             else 
                 IF_ID_ir <= instr;
