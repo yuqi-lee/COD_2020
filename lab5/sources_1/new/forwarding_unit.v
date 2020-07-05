@@ -22,10 +22,6 @@ module EX_forwarding_unit(
         else if(MEM_WB_wb[1] && (MEM_WB_Rd != 0) && (MEM_WB_Rd == ID_EX_Rs)) //ALU 运算结果要写回，下下个指令用
             ForwardA = 2'b01;
         
-        /*else if(MEM_WB_wb[1] && (MEM_WB_Rd != 0) && 
-        !(EX_MEM_wb[1] && (EX_MEM_Rd != 0) && (EX_MEM_Rd != ID_EX_Rs))
-        && (MEM_WB_Rd == ID_EX_Rs)) 
-            ForwardA = 2'b01;*/
         
         else 
             ForwardA = 2'b00;
@@ -40,12 +36,7 @@ module EX_forwarding_unit(
         
         else if(MEM_WB_wb[1] && (MEM_WB_Rd != 0) && (MEM_WB_Rd == ID_EX_Rt)) 
             ForwardB = 2'b01;
-        
-        /*else if(MEM_WB_wb[1] && (MEM_WB_Rd != 0) && 
-        !(EX_MEM_wb[1] && (EX_MEM_Rd != 0) && (EX_MEM_Rd != ID_EX_Rt))
-        && (MEM_WB_Rd == ID_EX_Rt)) 
-            ForwardB = 2'b01;*/
-        
+                    
         else 
             ForwardB = 2'b00;
     end

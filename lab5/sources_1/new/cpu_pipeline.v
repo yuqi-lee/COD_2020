@@ -3,9 +3,11 @@
 
 module cpu_pipeline(    
     input clk,			
-    input rst,          
+    input rst,   
+           
     output [31:0] done,
     output [31:0] pc_out
+
     );
 
     reg [31:0]   pc, 
@@ -152,19 +154,25 @@ module cpu_pipeline(
     assign RegWrite = MEM_WB_wb[1];
     assign MemtoReg = MEM_WB_wb[0];
     assign pc_out = pc;
+
     assign Zero = (beq_a == beq_b);
+
     assign alu_a = ForwardA[1] ?
             (ForwardA[0] ? 0 : EX_MEM_y) : (ForwardA[0] ? rf_wd : ID_EX_a);
     assign alu_b = ForwardB[1] ?
             (ForwardB[0] ? ID_EX_imm : EX_MEM_y) : (ForwardB[0] ? rf_wd : ID_EX_b);
+
     assign rf_wd = MemtoReg ? MEM_WB_mdr : MEM_WB_y;
     assign rf_wa = RegDst ? ID_EX_ir[15:11] : ID_EX_ir[20:16];
+
     assign pc_jump = {IF_ID_npc[31:28],IF_ID_ir[25:0],2'b00};
     assign SignExtendImm = {{16{IF_ID_ir[15]}},IF_ID_ir[15:0]};
     assign SignExtendShiftImm = {SignExtendImm[29:0],2'b00};
     assign pc_branch = SignExtendShiftImm + IF_ID_npc;
     assign pc_in = PCSrc[1] ?
             (PCSrc[0] ? 0: pc_jump) : (PCSrc[0] ? pc_branch: pc + 4);
+
+
     assign beq_a = BEQ_SrcA[1] ?
             (BEQ_SrcA[0] ? 0: EX_MEM_y) : (BEQ_SrcA[0] ? rf_wd: rd1);
     assign beq_b = BEQ_SrcB[1] ?
@@ -197,15 +205,20 @@ module cpu_pipeline(
         end
         else
         begin
+
             MEM_WB_wb <= EX_MEM_wb;
             MEM_WB_mdr <= mem_rd;
             MEM_WB_y <= EX_MEM_y;
             MEM_WB_wa <= EX_MEM_wa;
+
+
             EX_MEM_wb <= ID_EX_wb;
             EX_MEM_m <= ID_EX_m;
             EX_MEM_y <= alu_result;
             EX_MEM_wa <= rf_wa;
             EX_MEM_b <= alu_b;
+
+
             ID_EX_wb <= stall ? 2'b00 : ID_wb;
             ID_EX_m <= stall ? 2'b00 : ID_m;
             ID_EX_ex <= stall ? 3'b000 : ID_ex;
@@ -213,14 +226,17 @@ module cpu_pipeline(
             ID_EX_b <= rd2;
             ID_EX_imm <= SignExtendImm;
             ID_EX_ir <= IF_ID_ir;
+
+
             IF_ID_npc <= PC_IF_ID_Write ? pc + 4 : IF_ID_npc;
-            
+
             if(stall)
                 IF_ID_ir <= IF_ID_ir;
             else if(IF_flush) 
                 IF_ID_ir <= 0;
             else 
                 IF_ID_ir <= instr;
+                
             pc <= PC_IF_ID_Write ? pc_in : pc;
         end
     end

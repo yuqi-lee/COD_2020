@@ -2,27 +2,27 @@
 
 
 module register_file #(parameter WIDTH = 32)(
-    input clk,              //ʱ�ӣ���������Ч��
-    input rst,              // �첽��λ���ߵ�ƽ��Ч
-    input we,               // дʹ�ܣ��ߵ�ƽ��Ч
-    input [4:0] ra1,        // ���˿�0��ַ
-    input [4:0] ra2,        // ���˿�1��ַ
-    input [4:0] ra3,        // DBU ����ַ
-    input [4:0] wa,         // д�˿ڵ�ַ
-    input [WIDTH-1:0] wd,        // д�˿�����
-    output [WIDTH-1:0] rd1,      // ���˿�0����
-    output [WIDTH-1:0] rd2,      // ���˿�1����
-    output  [WIDTH-1:0] rd3      // DBU ������
+    input clk,              
+    input rst,             
+    input we,               
+    input [4:0] ra1,        
+    input [4:0] ra2,        
+    input [4:0] ra3,        
+    input [4:0] wa,        
+    input [WIDTH-1:0] wd,       
+    output [WIDTH-1:0] rd1,      
+    output [WIDTH-1:0] rd2,      
+    output  [WIDTH-1:0] rd3     
     );
 
 
-    reg [WIDTH-1:0] r [31:0];   // 32���Ĵ���
+    reg [WIDTH-1:0] r [31:0];   
     
     integer i;
     initial
     begin
         for(i=0; i<32; i=i+1)
-            r[i] = 0;  //��ʼ���Ĵ���
+            r[i] = 0; 
     end
     
     
