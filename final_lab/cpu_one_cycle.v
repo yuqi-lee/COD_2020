@@ -3,8 +3,16 @@
 module cpu_one_cycle
     (   
         input clk,          
-        input rst     
+        input rst,
+        input [33:0] d_bus_1,
+        // input [31:0] c_bus_1,
+
+        output [31:0] d_bus_2,
+        output [1:0] c_bus,
+        output [31:0] a_bus 
+
     );
+
 
     /*
     *   有关pc的32位信号
@@ -18,7 +26,7 @@ module cpu_one_cycle
     /* 其它 32 位信号 */
     wire [31:0] alu_result; // ALU运算结果
     wire [31:0] ins, imm_32, mem_data;  
-    wire [31:0] rd1, rd2, wd, b;   
+    wire [31:0] rd1, rd2,rd3, wd, b;   
 
     /* done 信号为 地址0x08的数据，检验 cpu 设计正确性时用到 */
     output [31:0] done;     
@@ -33,16 +41,7 @@ module cpu_one_cycle
     /* ALU  0 信号־*/
     wire zf;    
     
-    // 256*32 双端口RAM 数据存储器
-    dist_mem_gen_0  data_mem(
-        .clk(clk),
-        .a(alu_result[9:2]),
-        .d(rd2),
-        .we(signal[7]),
-        .spo(mem_data),
-        .dpra(ADDR),
-        .dpo(done)
-    );
+ 
     
     // 256*32 ָROM 指令存储器
     dist_mem_gen_1  ins_mem(.a(pc[9:2]),.spo(ins));
@@ -54,17 +53,22 @@ module cpu_one_cycle
     register_file rf(
         .ra1(ins[25:21]),
         .ra2(ins[20:16]),
+        .ra3(2)
         .wa(wa),
         .clk(clk),
         .wd(wd),
         .rd1(rd1),
         .rd2(rd2),
+        .rd3(rd3),
         .we(signal[9])
+        
     );
+
+    
     
     
     // 控制模块
-    control #(6) ctrl(.data(ins[31:26]),.s(signal));
+    control #(6) ctrl(.data(ins[31:26]), .data_1(ins[5:0]), .v0(rd3), .s(signal));
     alu_control alu_ctrl(.funct(ins[5:0]),.ALUop(signal[6:5]),.m(m));
     
     /* 确定新 pc 值 */
@@ -74,6 +78,7 @@ module cpu_one_cycle
     assign pc_jump = {pc_next[31:28],ins[25:0],2'b00};
 
     assign imm_32 = {{16{ins[15]}},ins[15:0]};
+
     // 确定ALU的第二个操作数来源于寄存器堆还是立即数扩展
     assign b = signal[8] ? imm_32 : rd2;
     
@@ -81,6 +86,8 @@ module cpu_one_cycle
     assign wa = signal[0] ? ins[15:11] : ins[20:16];
     assign wd = signal[4] ? mem_data : alu_result;
     
+    assign mem_data = d_bus_1[31:0];
+
     /* 异步复位以及更新 pc */
     always @(posedge clk or posedge rst)
     begin
@@ -91,7 +98,6 @@ module cpu_one_cycle
         else 
         begin
             pc = pc_new;
-
         end
     end
 endmodule
