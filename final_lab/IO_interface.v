@@ -1,13 +1,14 @@
 module IO_interface
     (
-        input sel,clk,
+        input clk,
         input is_ready_1,
         input is_ready_2,
         input [31:0] data_input,
-        input [31:0] DOR,
+        input [31:0] data_cpu,
+        input we,
         input [1:0] CR,
 
-        output [31:0] data_output,
+        output reg [31:0] data_output,
         output reg [31:0] DIR,
         output reg [1:0] SR
 
@@ -19,13 +20,17 @@ module IO_interface
     *  data 表示从外设接收到的数据
     */
 
-
-    
+    reg [31:0] DOR = 0;
 
     always@(posedge clk)
     begin
         SR[0] = is_ready_1;
         SR[1] = is_ready_2;
+
+        if(we)
+        begin
+            DOR = data_cpu;
+        end
 
         if(is_ready_1)   
         begin 

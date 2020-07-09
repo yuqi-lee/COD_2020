@@ -84,13 +84,21 @@ module cpu_debug(
     assign wa = signal[0] ? ins[15:11] : ins[20:16];
     assign wd = signal[4] ? mem_data : alu_result;
     
+
+    reg flag = 1'b0;
+
+
     always @(posedge clk or posedge rst)
     begin
-        if(rst) 
-            pc = 32'h00000000;
-        else if(run)
+        flag = flag + 1;
+        if(flag)
         begin
-            pc = pc_new;
+            if(rst) 
+                pc = 32'h00000000;
+            else if(run)
+            begin
+                pc = pc_new;
+            end
         end
     end
 endmodule

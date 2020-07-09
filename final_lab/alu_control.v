@@ -9,8 +9,10 @@ always @(*)
     case(ALUop)
         2'b00:
             m = 3'b000;
+            
         2'b01:
             m = 3'b001;
+            
         2'b10:
             begin
                 if(funct == 6'b100000)
@@ -20,6 +22,9 @@ always @(*)
                 else
                     m = 3'b000;
             end
+
+        default
+            m = 3'b000;
     endcase
 
 endmodule
