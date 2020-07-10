@@ -1,6 +1,7 @@
 module bus
     (
         input clk,rst,
+
         input [1:0] is_ready,
         input [31:0] data_input,
         
@@ -14,8 +15,7 @@ module bus
 
         d_bus_1 表示输入至 cpu 的数据总线分支
         d_bus_2     cpu 输出 的数据线
-        c_bus_1 表示输入至 cpu 的控制总线分支
-        c_bus_2     cpu 输出 的控制总线
+        c_bus    cpu 输出 的控制总线
         a_bus   地址总线
     */
 

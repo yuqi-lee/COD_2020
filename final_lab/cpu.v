@@ -76,7 +76,8 @@ module cpu
     assign pc_jump = {pc_next[31:28],ins[25:0],2'b00};
 
     assign imm_32 = ins[15] == 1 ? {{16'hffff,ins[15:0]} :  {{16'h0000,ins[15:0]};
-
+    assign rf_we = signal[9] & ~nop;
+    
     // 确定ALU的第二个操作数来源于寄存器堆还是立即数扩展
     assign b = signal[8] ? imm_32 : rd2;
     
@@ -96,7 +97,7 @@ module cpu
 
     assign a_bus = alu_result;
     assign d_bus_2 = rd2;
-    assign rf_we = signal[9] & ~nop;
+    
 
     /* 异步复位以及更新 pc */
     always @(posedge clk or posedge rst)
